@@ -51,7 +51,6 @@ jobs:
         with:
           gpu: nvidia/h100
           cuda-toolkit: "13.0"
-          counters: "true"
 
       # The project sets no architecture. The simulator runs PTX only
       # (90-virtual) and needs a shared CUDA runtime.
@@ -74,7 +73,7 @@ jobs:
         working-directory: build
         run: |
           set -o pipefail
-          vgpu run ctest -R '_device$' --output-on-failure -V 2>&1 | tee ../ctest.log
+          vgpu run --counters ctest -R '_device$' --output-on-failure -V 2>&1 | tee ../ctest.log
           if grep -qiE "VirtualGPU error|no device|no CUDA-capable|kernel failed|cudaMalloc failed|skipped|not run" ../ctest.log; then
             echo "::error::the run reported a device problem or a skipped test"; exit 1
           fi
